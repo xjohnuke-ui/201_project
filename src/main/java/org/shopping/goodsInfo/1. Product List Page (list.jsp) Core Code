@@ -1,0 +1,77 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<html>
+<head>
+    <title>Product List</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/list.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Product List</h1>
+        <div class="filters">
+            <form action="goods" method="get">
+                <input type="text" name="keyword" placeholder="Search products..." value="${param.keyword}">
+                <select name="type">
+                    <option value="">All Categories</option>
+                    <option value="Clothing" ${param.type == 'Clothing' ? 'selected' : ''}>Clothing</option>
+                    <option value="Shoes" ${param.type == 'Shoes' ? 'selected' : ''}>Shoes</option>
+                    <option value="Electronics" ${param.type == 'Electronics' ? 'selected' : ''}>Electronics</option>
+                    <option value="Medicine" ${param.type == 'Medicine' ? 'selected' : ''}>Medicine</option>
+                    <option value="Fruit" ${param.type == 'Fruit' ? 'selected' : ''}>Fruit</option>
+                </select>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="goods-container">
+        <c:choose>
+            <c:when test="${empty goodsList}">
+                <p class="no-goods">No products available</p>
+            </c:when>
+            <c:otherwise>
+                <c:forEach var="goods" items="${goodsList}">
+                    <div class="goods-card">
+                        <div class="goods-image">
+                            <img src="${pageContext.request.contextPath}/goodsPic/${goods.pic}" 
+                                 alt="${goods.goodsName}"
+                                 onerror="this.src='${pageContext.request.contextPath}/goodsPic/default.jpg'">
+                        </div>
+                        <div class="goods-info">
+                            <h3 class="goods-name">${goods.goodsName}</h3>
+                            <p class="goods-manufacturer">Manufacturer: ${goods.manufacturer}</p>
+                            <p class="goods-price">¥ ${goods.price}</p>
+                            <p class="goods-type">Category: ${goods.type}</p>
+                            <div class="goods-actions">
+                                <a href="goods?action=detail&id=${goods.goodsId}" class="btn-detail">View Details</a>
+                                <button class="btn-cart" onclick="addToCart(${goods.goodsId})">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
+    </div>
+    
+    <script>
+    function addToCart(goodsId) {
+        // TODO: Call cart API (to be implemented by team member D)
+        fetch('cart?action=add&goodsId=' + goodsId, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                alert('Added to cart');
+            } else {
+                alert('Failed to add to cart: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Network error, please try again later');
+        });
+    }
+    </script>
+</body>
+</html>

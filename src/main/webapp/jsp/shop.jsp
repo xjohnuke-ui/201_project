@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/shop.css">
 </head>
 
+
 <body>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -101,6 +102,12 @@
                     <img src="/goodsPic/${map.pic}" alt="" class="product-image">
                     <div class="product-title">${map.goods_name}</div>
                     <div class="product-price">${map.price}</div>
+                    <!-- 新增：按钮，阻止跳转 -->
+                    <button type="button"
+                            class="add-cart-btn"
+                            data-id="${map.goods_id}">
+                        Add to Cart
+                    </button>
                 </div>
             </a>
         </c:forEach>
